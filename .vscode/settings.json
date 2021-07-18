@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/05d988c9-c9cb-4efd-912d-ccca76f8e893/resourceGroups/blushbackendResourceGroup/providers/Microsoft.Web/sites/blushbarbackend",
+    "appService.deploySubpath": "."
+}
