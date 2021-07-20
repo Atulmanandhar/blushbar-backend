@@ -25,7 +25,7 @@ exports.signup = (req, res) => {
 
       const emailData = {
         from: `atulmdhr@gmail.com`,
-        to: `izf.atul@gmail.com`,
+        to: process.env.EMAIL_TO,
         subject: `Account activation Link`,
         html: `
           <h1>Please use the following link to activate your account</h1>
@@ -40,8 +40,8 @@ exports.signup = (req, res) => {
       sgMail
         .send(emailData)
         .then((sent) => {
-          console.log("SIGNUP EMAIL SENT", sent);
-          console.log("SIGNUP EMAIL SENT", process.env.EMAIL_TO);
+          // console.log("SIGNUP EMAIL SENT", sent);
+          // console.log("SIGNUP EMAIL SENT", process.env.EMAIL_TO);
           return res.json({
             message: `Email has been sent to  ${email}. Follow the instructions to activate your account.`,
           });
@@ -199,7 +199,7 @@ exports.forgotPassword = (req, res) => {
 
     const emailData = {
       from: `atulmdhr@gmail.com`,
-      to: `izf.atul@gmail.com`, //email rakhney eta
+      to: process.env.EMAIL_TO, //email rakhney eta
       subject: `Forgot Password Link`,
       html: `
         <h1>Please use the following link to reset your password</h1>
@@ -220,8 +220,8 @@ exports.forgotPassword = (req, res) => {
         sgMail
           .send(emailData)
           .then((sent) => {
-            console.log("Forgot EMAIL SENT", sent);
-            console.log("Forgot EMAIL SENT", process.env.EMAIL_TO);
+            // console.log("Forgot EMAIL SENT", sent);
+            // console.log("Forgot EMAIL SENT", process.env.EMAIL_TO);
             return res.json({
               message: `Email has been sent to  ${email}. Follow the instructions to activate your account.`,
             });
