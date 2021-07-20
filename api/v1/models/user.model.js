@@ -12,11 +12,6 @@ const userSchema = new mongoose.Schema(
       unique: true,
     },
     hashed_password: { type: String, required: true },
-    accountType: {
-      type: String,
-      enum: ["email", "google", "facebook"],
-      default: "email",
-    },
     profilePicture: {
       type: String,
       default: "",
