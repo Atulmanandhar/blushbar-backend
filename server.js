@@ -18,6 +18,7 @@ mongoose
 //import routes
 const authRoutes = require("./api/v1/routes/auth.route");
 const userRoutes = require("./api/v1/routes/user.route");
+const productRoutes = require("./api/v1/routes/product.route");
 
 //middlewares
 app.use("/uploads", express.static("uploads"));
@@ -41,6 +42,7 @@ app.get("/hi", (req, res) => {
 
 app.use("/api/v1", authRoutes);
 app.use("/api/v1", userRoutes);
+app.use("/api/v1", productRoutes);
 
 app.use(function (err, req, res, next) {
   if (err.name === "UnauthorizedError") {
