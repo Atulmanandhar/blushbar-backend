@@ -1,7 +1,7 @@
 /node_modules
 .env
 /uploads/profile/*
-
+.package-lock.json
 
 !uploads/profile/.gitkeep 
 
