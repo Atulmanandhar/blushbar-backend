@@ -23,6 +23,10 @@ exports.createProductValidator = [
   check("showFirstPage")
     .isBoolean()
     .withMessage("Show first page must be a boolean"),
+
+  check("totalStock").notEmpty().withMessage("Total Stock is required"),
+  check("totalStock").isNumeric().withMessage("Total Stock must be a number"),
+  check("totalStock"),
 ];
 
 exports.updateProductValidator = [
@@ -58,4 +62,8 @@ exports.updateProductValidator = [
     .optional()
     .isBoolean()
     .withMessage("Show first page must be a boolean"),
+  check("totalStock")
+    .optional()
+    .isNumeric()
+    .withMessage("Total Stock must be a number"),
 ];

@@ -26,6 +26,7 @@ exports.createProduct = async (req, res) => {
     category,
     productBrand,
     showFirstPage,
+    totalStock,
   } = req.body;
 
   const capsCategory = category.toUpperCase();
@@ -47,6 +48,7 @@ exports.createProduct = async (req, res) => {
     category: capsCategory,
     productBrand: capsProductBrand,
     showFirstPage,
+    totalStock,
   });
 
   try {
@@ -170,6 +172,7 @@ exports.updateProduct = async (req, res) => {
       productBrand,
       showFirstPage,
       imageUrls,
+      totalStock,
     } = req.body;
 
     const urlScheme = DEBUG ? req.protocol + "://" : "";
@@ -240,6 +243,9 @@ exports.updateProduct = async (req, res) => {
 
     if (showFirstPage) {
       myQuery = { ...myQuery, showFirstPage };
+    }
+    if (totalStock) {
+      myQuery = { ...myQuery, totalStock };
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(

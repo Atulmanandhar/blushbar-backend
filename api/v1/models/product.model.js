@@ -10,6 +10,7 @@ const productSchema = mongoose.Schema(
     showFirstPage: { type: Boolean, required: true },
     productBrand: { type: String },
     category: { type: String },
+    totalStock: { type: Number, min: 0 },
   },
   {
     timestamps: true,
