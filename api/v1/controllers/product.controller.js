@@ -27,6 +27,9 @@ exports.createProduct = async (req, res) => {
     productBrand,
     showFirstPage,
     totalStock,
+    isBestSeller,
+    isNewArrival,
+    isNewLaunch,
   } = req.body;
 
   const capsCategory = category.toUpperCase();
@@ -49,6 +52,9 @@ exports.createProduct = async (req, res) => {
     productBrand: capsProductBrand,
     showFirstPage,
     totalStock,
+    isBestSeller,
+    isNewArrival,
+    isNewLaunch,
   });
 
   try {
@@ -74,12 +80,24 @@ exports.getProduct = async (req, res) => {
     showFirstPage = null,
     productBrand = "",
     category = "",
+    isBestSeller = null,
+    isNewArrival = null,
+    isNewLaunch = null,
   } = req.query;
   try {
     let myQuery = {};
     console.log(typeof !!showFirstPage, showFirstPage);
     if (!!showFirstPage) {
       myQuery = { showFirstPage };
+    }
+    if (!!isBestSeller) {
+      myQuery = { isBestSeller };
+    }
+    if (!!isNewArrival) {
+      myQuery = { isNewArrival };
+    }
+    if (!!isNewLaunch) {
+      myQuery = { isNewLaunch };
     }
     if (/\S/.test(productBrand)) {
       myQuery = { ...myQuery, productBrand: productBrand.toUpperCase() };
@@ -173,6 +191,9 @@ exports.updateProduct = async (req, res) => {
       showFirstPage,
       imageUrls,
       totalStock,
+      isBestSeller,
+      isNewArrival,
+      isNewLaunch,
     } = req.body;
 
     const urlScheme = DEBUG ? req.protocol + "://" : "";
@@ -246,6 +267,15 @@ exports.updateProduct = async (req, res) => {
     }
     if (totalStock) {
       myQuery = { ...myQuery, totalStock };
+    }
+    if (isBestSeller) {
+      myQuery = { ...myQuery, isBestSeller };
+    }
+    if (isNewLaunch) {
+      myQuery = { ...myQuery, isNewLaunch };
+    }
+    if (isNewArrival) {
+      myQuery = { ...myQuery, isNewArrival };
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(

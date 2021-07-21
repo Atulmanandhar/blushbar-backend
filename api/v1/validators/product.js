@@ -26,7 +26,17 @@ exports.createProductValidator = [
 
   check("totalStock").notEmpty().withMessage("Total Stock is required"),
   check("totalStock").isNumeric().withMessage("Total Stock must be a number"),
-  check("totalStock"),
+
+  check("isBestSeller").notEmpty().withMessage("isBestSeller is required"),
+  check("isBestSeller")
+    .isBoolean()
+    .withMessage("isBestSeller must be a boolean"),
+  check("isNewArrival").notEmpty().withMessage("isNewArrival is required"),
+  check("isNewArrival")
+    .isBoolean()
+    .withMessage("Best Seller must be a boolean"),
+  check("isNewLaunch").notEmpty().withMessage("isNewArrival is required"),
+  check("isNewLaunch").isBoolean().withMessage("isNewLaunch must be a boolean"),
 ];
 
 exports.updateProductValidator = [
@@ -56,14 +66,22 @@ exports.updateProductValidator = [
     .withMessage("productBrand is required"),
   check("showFirstPage")
     .optional()
-    .notEmpty()
-    .withMessage("Show First Page is required"),
-  check("showFirstPage")
-    .optional()
     .isBoolean()
     .withMessage("Show first page must be a boolean"),
   check("totalStock")
     .optional()
     .isNumeric()
     .withMessage("Total Stock must be a number"),
+  check("isBestSeller")
+    .optional()
+    .isBoolean()
+    .withMessage("isBestSeller must be a boolean"),
+  check("isNewArrival")
+    .optional()
+    .isBoolean()
+    .withMessage("isNewArrival must be a boolean"),
+  check("isNewLaunch")
+    .optional()
+    .isBoolean()
+    .withMessage("isNewLaunch must be a boolean"),
 ];

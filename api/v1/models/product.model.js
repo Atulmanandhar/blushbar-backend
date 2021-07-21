@@ -11,6 +11,9 @@ const productSchema = mongoose.Schema(
     productBrand: { type: String },
     category: { type: String },
     totalStock: { type: Number, min: 0 },
+    isBestSeller: { type: Boolean, required: true },
+    isNewArrival: { type: Boolean, required: true },
+    isNewLaunch: { type: Boolean, required: true },
   },
   {
     timestamps: true,

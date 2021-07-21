@@ -3,6 +3,9 @@ const app = express();
 const morgan = require("morgan");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const compression = require("compression");
+const helmet = require("helmet");
+
 require("dotenv").config();
 const port = process.env.PORT || 8000;
 let DEBUG;
@@ -11,6 +14,7 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
+    useFindAndModify: false,
   })
   .then(() => console.log("db connected"))
   .catch((err) => console.log(err));
@@ -19,12 +23,15 @@ mongoose
 const authRoutes = require("./api/v1/routes/auth.route");
 const userRoutes = require("./api/v1/routes/user.route");
 const productRoutes = require("./api/v1/routes/product.route");
+const orderRoutes = require("./api/v1/routes/order.route");
 
 //middlewares
 app.use("/uploads", express.static("uploads"));
 //middlewares
 app.use(express.json());
 app.use(cors());
+app.use(helmet());
+app.use(compression());
 
 if (process.env.NODE_ENV === "development") {
   DEBUG = true;
@@ -43,6 +50,7 @@ app.get("/hi", (req, res) => {
 app.use("/api/v1", authRoutes);
 app.use("/api/v1", userRoutes);
 app.use("/api/v1", productRoutes);
+app.use("/api/v1", orderRoutes);
 
 app.use(function (err, req, res, next) {
   if (err.name === "UnauthorizedError") {
