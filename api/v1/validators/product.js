@@ -5,6 +5,7 @@ exports.createProductValidator = [
     .trim()
     .notEmpty()
     .withMessage("Product Name is required"),
+  check("itemCode").trim().notEmpty().withMessage("itemCode is required"),
   check("productPrice").notEmpty().withMessage("Product Price is required"),
   check("productPrice")
     .isNumeric()
@@ -45,6 +46,11 @@ exports.updateProductValidator = [
     .trim()
     .notEmpty()
     .withMessage("Product Name is required"),
+  check("itemCode")
+    .optional()
+    .trim()
+    .notEmpty()
+    .withMessage("itemCode is required"),
   check("productPrice")
     .optional()
     .isNumeric()

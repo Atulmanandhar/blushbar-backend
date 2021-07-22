@@ -156,6 +156,41 @@ exports.changeOrderStatus = async (req, res) => {
         success: false,
       });
 
+    if (orderStatus === "canceled") {
+      updatedOrder.products.map(async (individualProdId) => {
+        try {
+          const updateProduct = await Product.findByIdAndUpdate(
+            {
+              _id: individualProdId.product,
+            },
+            {
+              $inc: { totalStock: +individualProdId.quantity },
+            },
+            { new: false }
+          );
+        } catch (err) {
+          console.log("canceled product err", err);
+        }
+      });
+    }
+    if (orderStatus === "completed") {
+      updatedOrder.products.map(async (individualProdId) => {
+        try {
+          const updateProduct = await Product.findByIdAndUpdate(
+            {
+              _id: individualProdId.product,
+            },
+            {
+              $inc: { totalSold: individualProdId.quantity },
+            },
+            { new: false }
+          );
+        } catch (err) {
+          console.log("sold product err", err);
+        }
+      });
+    }
+
     res.status(201).json({
       message: `This order has been sucessfully ${orderStatus}`,
       data: updatedOrder,

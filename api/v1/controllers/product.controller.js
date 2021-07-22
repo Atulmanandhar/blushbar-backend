@@ -30,6 +30,7 @@ exports.createProduct = async (req, res) => {
     isBestSeller,
     isNewArrival,
     isNewLaunch,
+    itemCode
   } = req.body;
 
   const capsCategory = category.toUpperCase();
@@ -55,6 +56,7 @@ exports.createProduct = async (req, res) => {
     isBestSeller,
     isNewArrival,
     isNewLaunch,
+    itemCode
   });
 
   try {
@@ -194,6 +196,7 @@ exports.updateProduct = async (req, res) => {
       isBestSeller,
       isNewArrival,
       isNewLaunch,
+      itemCode
     } = req.body;
 
     const urlScheme = DEBUG ? req.protocol + "://" : "";
@@ -276,6 +279,9 @@ exports.updateProduct = async (req, res) => {
     }
     if (isNewArrival) {
       myQuery = { ...myQuery, isNewArrival };
+    }
+    if (itemCode) {
+      myQuery = { ...myQuery, itemCode };
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(
