@@ -7,6 +7,7 @@ const {
   getOrders,
   changeOrderStatus,
   getOrderById,
+  getOrdersByAdmin,
 } = require("../controllers/order.controller");
 
 const {
@@ -30,8 +31,10 @@ router.post(
   createOrder
 );
 
-//get own orders (subscriber and artist)
-router.get("/orders", requireSignin, getOrders);
+//get own orders (subscriber)
+router.get("/orders", requireSignin, subscriberMiddleWare, getOrders);
+//get orders by admin
+router.get("/admin/orders", requireSignin, adminMiddleWare, getOrdersByAdmin);
 //get a particular order by subscriber
 router.get(
   "/orders/:orderId",

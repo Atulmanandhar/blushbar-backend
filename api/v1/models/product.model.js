@@ -14,7 +14,7 @@ const productSchema = mongoose.Schema(
     isBestSeller: { type: Boolean, required: true },
     isNewArrival: { type: Boolean, required: true },
     isNewLaunch: { type: Boolean, required: true },
-    itemCode: { type: String, required: true },
+    itemCode: { type: String, required: true, unique: true },
     totalSold: {
       type: Number,
       default: 0,

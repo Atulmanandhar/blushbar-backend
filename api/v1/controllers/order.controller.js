@@ -137,6 +137,51 @@ exports.getOrders = async (req, res) => {
   }
 };
 
+exports.getOrdersByAdmin = async (req, res) => {
+  const { _id } = req.user;
+  const { page = 1, limit = 10, orderStatus } = req.query;
+  let myQuery = {};
+  if (!!orderStatus) {
+    const checkingArray = ["pending", "accepted", "canceled", "completed"];
+    const checkValueExists = checkingArray.some(
+      (item) => item === orderStatus.toLowerCase()
+    ); // Returns true or false
+    if (checkValueExists) {
+      myQuery = { orderStatus };
+    }
+  }
+
+  try {
+    const orderResult = await Order.find(myQuery)
+      .populate({
+        path: "createdBy",
+        select: "-__v -hashed_password -salt -resetPasswordLink",
+      })
+      .populate({
+        path: "products.product",
+        select: "-__v",
+      })
+      .select("-__v")
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
+    const orderResultTotal = await Order.countDocuments(myQuery).exec();
+    return res.status(200).json({
+      totalDocs: orderResultTotal,
+      total: orderResult.length,
+      page: Number(page),
+      limit: Number(limit),
+      data: orderResult,
+      success: true,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: err,
+      success: false,
+    });
+  }
+};
+
 //accept or reject orders by admin
 
 exports.changeOrderStatus = async (req, res) => {
