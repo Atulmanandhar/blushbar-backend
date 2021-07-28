@@ -185,7 +185,7 @@ exports.imageUpload = (req, res) => {
       }
       ImageRemover(user.profilePicture, "profile", req.headers.host);
 
-      const urlScheme = DEBUG ? req.protocol + "://" : "";
+      const urlScheme = DEBUG ? req.protocol + "://" : "https://";
       const filePath = req.file.path.replace(/\\/g, "/");
 
       user.profilePicture = urlScheme + req.headers.host + "/" + filePath;

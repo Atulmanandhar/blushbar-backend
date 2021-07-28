@@ -2,8 +2,10 @@
 .env
 /uploads/profile/*
 /uploads/product/*
+/uploads/category/*
 .package-lock.json
 
 !uploads/profile/.gitkeep 
 !uploads/product/.gitkeep 
+!uploads/category/.gitkeep 
 

@@ -11,10 +11,7 @@ const {
   requireSignin,
   adminMiddleWare,
 } = require("../middleware/auth.middleware");
-const {
-  createCategoryValidator,
-  updateCategoryValidator,
-} = require("../validators/category");
+const { createCategoryValidator } = require("../validators/category");
 const { runValidationwithImages } = require("../validators/");
 const multer = require("multer");
 const path = require("path");
@@ -83,6 +80,35 @@ router.post(
   createCategoryValidator,
   runValidationwithImages,
   createCategory
+);
+
+//update a category by admin
+router.patch(
+  "/category/:categoryId",
+  requireSignin,
+  adminMiddleWare,
+  function (req, res, next) {
+    uploadMiddleWare(req, res, function (err) {
+      if (err instanceof multer.MulterError) {
+        // A Multer error occurred when uploading.
+        return res.status(500).json({
+          error:
+            "You can only upload a maximum of 1 files. File can be of jpeg and pngs only",
+          err,
+        });
+      } else if (err) {
+        return res.status(500).json({
+          error: "Error uploading files. Please try again",
+          err,
+        });
+      }
+
+      next();
+    });
+  },
+  createCategoryValidator,
+  runValidationwithImages,
+  updateCategory
 );
 
 //Get all Categories

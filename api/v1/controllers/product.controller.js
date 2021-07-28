@@ -36,7 +36,7 @@ exports.createProduct = async (req, res) => {
   const capsCategory = category.toUpperCase();
   const capsProductBrand = productBrand.toUpperCase();
 
-  const urlScheme = DEBUG ? req.protocol + "://" : "";
+  const urlScheme = DEBUG ? req.protocol + "://" : "https://";
   const productImageLinks = req.files.map((item) => {
     const filePath = item.path.replace(/\\/g, "/");
 
@@ -199,7 +199,7 @@ exports.updateProduct = async (req, res) => {
       itemCode
     } = req.body;
 
-    const urlScheme = DEBUG ? req.protocol + "://" : "";
+    const urlScheme = DEBUG ? req.protocol + "://" : "https://";
     let productImageLinks = req.files.map((item) => {
       const filePath = item.path.replace(/\\/g, "/");
 
