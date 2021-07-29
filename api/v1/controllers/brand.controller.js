@@ -63,14 +63,19 @@ exports.updateBrand = async (req, res) => {
   }
 };
 exports.getBrand = async (req, res) => {
-  const { page = 1, limit = 10 } = req.query;
+  const { page = 1, limit = 10, search = "" } = req.query;
+  let myQuery = {};
+  if (/\S/.test(search)) {
+    const regex = new RegExp(`.*${search}.*`, "i");
+    myQuery = { ...myQuery, brandName: regex };
+  }
   try {
-    const brand = await Brand.find()
+    const brand = await Brand.find(myQuery)
       .select("-__v -createdBy")
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .exec();
-    const brandTotal = await Brand.countDocuments().exec();
+    const brandTotal = await Brand.countDocuments(myQuery).exec();
     res.status(200).json({
       totalDocs: brandTotal,
       total: brand.length,

@@ -30,7 +30,7 @@ exports.createProduct = async (req, res) => {
     isBestSeller,
     isNewArrival,
     isNewLaunch,
-    itemCode
+    itemCode,
   } = req.body;
 
   const capsCategory = category.toUpperCase();
@@ -56,7 +56,7 @@ exports.createProduct = async (req, res) => {
     isBestSeller,
     isNewArrival,
     isNewLaunch,
-    itemCode
+    itemCode,
   });
 
   try {
@@ -85,10 +85,10 @@ exports.getProduct = async (req, res) => {
     isBestSeller = null,
     isNewArrival = null,
     isNewLaunch = null,
+    search = "",
   } = req.query;
   try {
     let myQuery = {};
-    console.log(typeof !!showFirstPage, showFirstPage);
     if (!!showFirstPage) {
       myQuery = { showFirstPage };
     }
@@ -106,6 +106,10 @@ exports.getProduct = async (req, res) => {
     }
     if (/\S/.test(category)) {
       myQuery = { ...myQuery, category: category.toUpperCase() };
+    }
+    if (/\S/.test(search)) {
+      const regex = new RegExp(`.*${search}.*`, "i");
+      myQuery = { ...myQuery, productName: regex };
     }
     const product = await Product.find(myQuery)
       .select("-__v -createdBy")
@@ -196,7 +200,7 @@ exports.updateProduct = async (req, res) => {
       isBestSeller,
       isNewArrival,
       isNewLaunch,
-      itemCode
+      itemCode,
     } = req.body;
 
     const urlScheme = DEBUG ? req.protocol + "://" : "https://";

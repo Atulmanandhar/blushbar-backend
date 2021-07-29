@@ -58,7 +58,6 @@ exports.updateCategory = async (req, res) => {
   }
 
   if (req.file === undefined && !checkPrevImgFlag) {
-    console.log("heello");
     return res.status(400).json({
       error:
         "Atleast one Image is required. Please send the previous image Link or uploada new one",
@@ -83,7 +82,6 @@ exports.updateCategory = async (req, res) => {
     let imageToUploadLink = category.categoryImage;
     //if both usePreviousImage = true and image file was sent on the body, we will use the new uploaded image
     // remove the previously stored file.
-    console.log(imageToUploadLink);
 
     if (!!req.file) {
       ImageRemover(category.categoryImage, "category", req.headers.host);

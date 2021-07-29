@@ -27,6 +27,7 @@ const orderRoutes = require("./api/v1/routes/order.route");
 const categoryRoutes = require("./api/v1/routes/category.route");
 const brandRoutes = require("./api/v1/routes/brand.route");
 const promoCodeRoutes = require("./api/v1/routes/promocode.route");
+const searchRoutes = require("./api/v1/routes/search.route");
 
 //middlewares
 app.use("/uploads", express.static("uploads"));
@@ -57,6 +58,7 @@ app.use("/api/v1", orderRoutes);
 app.use("/api/v1", categoryRoutes);
 app.use("/api/v1", brandRoutes);
 app.use("/api/v1", promoCodeRoutes);
+app.use("/api/v1", searchRoutes);
 
 app.use(function (err, req, res, next) {
   if (err.name === "UnauthorizedError") {
