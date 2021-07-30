@@ -33,6 +33,18 @@ exports.createCategory = async (req, res) => {
   });
 
   try {
+    const checkIfCategoryExists = await Category.find({
+      categoryName: capsCategoryName,
+    }).exec();
+    if (checkIfCategoryExists.length > 0) {
+      ImageRemover(categoryImageLink, "category", req.headers.host);
+
+      return res.status(400).json({
+        error: "Category with that name already Exists",
+        success: false,
+      });
+    }
+
     const result = await category.save();
     DEBUG && console.log(result);
     return res.status(201).json({

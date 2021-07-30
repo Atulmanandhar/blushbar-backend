@@ -106,7 +106,6 @@ exports.update = (req, res) => {
   User.findById(req.user._id)
     .exec()
     .then((user) => {
-      console.log(user, "asd");
       if (!user) {
         return res.status(400).json({
           error: "User not found",

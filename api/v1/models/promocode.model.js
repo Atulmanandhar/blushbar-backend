@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const promoCodeModel = mongoose.Schema(
   {
     _id: mongoose.Schema.Types.ObjectId,
-    codeName: { type: String, required: true },
+    codeName: { type: String, required: true, unique: true },
     codeDiscount: { type: Number, required: true },
     minOrder: { type: Number, required: true },
     discountType: {

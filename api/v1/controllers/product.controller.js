@@ -60,6 +60,18 @@ exports.createProduct = async (req, res) => {
   });
 
   try {
+    const checkIfProductExists = await Product.find({ itemCode }).exec();
+    if (checkIfProductExists.length > 0) {
+      productImageLinks.forEach((link) =>
+        ImageRemover(link, "product", req.headers.host)
+      );
+
+      return res.status(400).json({
+        error: "Product with that itemCode already Exists",
+        success: false,
+      });
+    }
+
     const result = await product.save();
     DEBUG && console.log(result);
     return res.status(201).json({
@@ -86,6 +98,7 @@ exports.getProduct = async (req, res) => {
     isNewArrival = null,
     isNewLaunch = null,
     search = "",
+    sortByPrice = "asc",
   } = req.query;
   try {
     let myQuery = {};
@@ -111,7 +124,17 @@ exports.getProduct = async (req, res) => {
       const regex = new RegExp(`.*${search}.*`, "i");
       myQuery = { ...myQuery, productName: regex };
     }
+
+    if (sortByPrice !== "asc" && sortByPrice !== "desc") {
+      return res.status(400).json({
+        error:
+          "please send the correct sortByPrice. It can be either asc or desc.",
+        success: false,
+      });
+    }
+
     const product = await Product.find(myQuery)
+      .sort({ productPrice: sortByPrice })
       .select("-__v -createdBy")
       .limit(limit * 1)
       .skip((page - 1) * limit)

@@ -25,6 +25,14 @@ exports.createPromoCode = async (req, res) => {
   });
 
   try {
+    const checkIfCodeExists = await PromoCode.find({ codeName: capsCodeName });
+    if (checkIfCodeExists.length > 0) {
+      return res.status(400).json({
+        error: "Code with that name already Exists",
+        success: false,
+      });
+    }
+
     const result = await promoCode.save();
     DEBUG && console.log(result);
     return res.status(201).json({
@@ -49,7 +57,7 @@ exports.updatePromoCode = async (req, res) => {
 
   if (!!codeName) {
     const capsCodeName = codeName.toUpperCase();
-    myQuery = { ...myQuery, capsCodeName };
+    myQuery = { ...myQuery, codeName: capsCodeName };
   }
   if (!!codeDiscount) {
     myQuery = { ...myQuery, codeDiscount };
@@ -124,9 +132,10 @@ exports.deletePromoCodeById = async (req, res) => {
   try {
     const promoCode = await PromoCode.findById(promoCodeId).exec();
     if (!promoCode) {
-      return res
-        .status(404)
-        .json({ error: "The Brand couldn't be found", success: false });
+      return res.status(404).json({
+        error: "The Code with that id couldn't be found",
+        success: false,
+      });
     }
 
     const deletedCode = await PromoCode.findByIdAndRemove(promoCodeId).exec();

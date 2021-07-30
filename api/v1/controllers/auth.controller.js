@@ -80,7 +80,7 @@ exports.accountActivation = (req, res) => {
           .save()
           .then(() => {
             return res.json({
-              message: " Signup success. Please signin.",
+              message: "Signup success. Please signin.",
             });
           })
           .catch((err) => {
@@ -105,7 +105,7 @@ exports.signin = (req, res) => {
     .then((user) => {
       if (!user) {
         return res.status(400).json({
-          error: "USer with that email doesnt exist",
+          error: "User with that email doesnt exist",
         });
       }
       //schema ma method cha authentticate->will return true or false

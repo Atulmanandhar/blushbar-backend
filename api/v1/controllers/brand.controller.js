@@ -19,6 +19,13 @@ exports.createBrand = async (req, res) => {
   });
 
   try {
+    const checkIfBrandExists = await Brand.find({ brandName: capsBrandName });
+    if (checkIfBrandExists.length > 0) {
+      return res.status(400).json({
+        error: "Brand with that name already Exists",
+        success: false,
+      });
+    }
     const result = await brand.save();
     DEBUG && console.log(result);
     return res.status(201).json({
