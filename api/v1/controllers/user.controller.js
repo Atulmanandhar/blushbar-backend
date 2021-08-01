@@ -13,7 +13,7 @@ exports.read = (req, res) => {
   const userId = req.user._id;
   //findOne({_id:userId})
   User.findById(userId)
-    .select("-__v -hashed_password -salt")
+    .select("-__v -hashed_password -salt -resetCode")
     .exec()
     .then((user) => {
       if (!user) {

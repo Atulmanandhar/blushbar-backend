@@ -22,9 +22,13 @@ const userSchema = new mongoose.Schema(
       enum: ["subscriber", "admin"],
       default: "subscriber",
     },
-    resetPasswordLink: {
-      data: String,
-      default: "",
+    // resetPasswordLink: {
+    //   data: String,
+    //   default: "",
+    // },
+    resetCode: {
+      type: Number,
+      default: null,
     },
     phoneNumber: { type: Number, default: "0000" },
     isPhoneVerified: { type: Boolean, default: false },

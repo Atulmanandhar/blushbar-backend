@@ -7,6 +7,8 @@ const {
   forgotPassword,
   resetPassword,
   changePassword,
+  success,
+  failure,
 } = require("../controllers/auth.controller");
 const {
   userSignupValidator,
@@ -19,7 +21,8 @@ const { runValidation } = require("../validators/");
 const { requireSignin } = require("../middleware/auth.middleware");
 
 router.post("/signup", userSignupValidator, runValidation, signup);
-router.post("/account-activation", accountActivation);
+// router.post("/account-activation", accountActivation);
+router.get("/account-activation/:token", accountActivation);
 router.post("/signin", userSigninValidator, runValidation, signin);
 
 router.post(
@@ -43,5 +46,8 @@ router.put(
   runValidation,
   resetPassword
 );
+
+router.get("/success",success)
+router.get("/failure",failure)
 
 module.exports = router;
