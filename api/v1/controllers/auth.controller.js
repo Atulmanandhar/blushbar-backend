@@ -4,7 +4,6 @@ const expressJwt = require("express-jwt");
 const sgMail = require("@sendgrid/mail");
 const _ = require("lodash");
 const { OAuth2Client } = require("google-auth-library");
-const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -291,13 +290,15 @@ exports.failure = (req, res) => {
 };
 
 exports.googleLogin = async (req, res) => {
+  const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
   const { idToken } = req.body;
   try {
     const response = await googleClient.verifyIdToken({
       idToken,
       audience: process.env.GOOGLE_CLIENT_ID,
     });
-    const { email_verified, name, email } = response.payload;
+    const { email_verified, name, email, picture = "" } = response.payload;
     if (email_verified) {
       const user = await User.findOne({ email }).exec();
 
@@ -319,7 +320,12 @@ exports.googleLogin = async (req, res) => {
       } else {
         //generate a random password (userModel requires a password)
         let password = email + process.env.JWT_SECRET;
-        const newUser = new User({ name, email, password });
+        const newUser = new User({
+          name,
+          email,
+          password,
+          profilePicture: picture,
+        });
         const token = jwt.sign({ _id: newUser._id }, process.env.JWT_SECRET, {
           expiresIn: "7d",
         });
