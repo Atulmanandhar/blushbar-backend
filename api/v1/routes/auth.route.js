@@ -9,6 +9,7 @@ const {
   changePassword,
   success,
   failure,
+  googleLogin,
 } = require("../controllers/auth.controller");
 const {
   userSignupValidator,
@@ -24,6 +25,7 @@ router.post("/signup", userSignupValidator, runValidation, signup);
 // router.post("/account-activation", accountActivation);
 router.get("/account-activation/:token", accountActivation);
 router.post("/signin", userSigninValidator, runValidation, signin);
+router.post("/google-login",googleLogin)
 
 router.post(
   "/changePassword",
