@@ -318,7 +318,7 @@ exports.googleLogin = async (req, res) => {
           success: true,
         });
       } else {
-        //generate a random password (userModel requires a password)
+        //generate a random password (userModel requires a password )
         let password = email + process.env.JWT_SECRET;
         const newUser = new User({
           name,
