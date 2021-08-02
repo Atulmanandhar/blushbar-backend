@@ -368,12 +368,17 @@ exports.facebookLogin = async (req, res) => {
     const response = await fetch(apiUrl, { method: "GET" });
     const responseJson = await response.json();
     const {
-      email,
+      email = "",
       name,
       picture: {
         data: { url },
       },
     } = responseJson;
+    if (email === "")
+      return res.status(404).json({
+        error: "Couldn't find an email associated with this facebook account",
+        success: false,
+      });
     const user = await User.findOne({ email }).exec();
 
     if (user) {

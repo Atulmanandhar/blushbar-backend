@@ -1,6 +1,13 @@
 const mongoose = require("mongoose");
 const { createHmac } = require("crypto");
+
+const locationSchema = new mongoose.Schema({
+  city: { type: String, trim: true },
+  address: { type: String, trim: true },
+});
+
 //user schema
+
 const userSchema = new mongoose.Schema(
   {
     name: { type: String, trim: true, required: true, max: 32 },
@@ -32,6 +39,8 @@ const userSchema = new mongoose.Schema(
     },
     phoneNumber: { type: Number, default: "0000" },
     isPhoneVerified: { type: Boolean, default: false },
+    homeAddress: locationSchema,
+    workAddress: locationSchema,
   },
   { timestamps: true }
 );

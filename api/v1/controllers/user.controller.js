@@ -102,7 +102,8 @@ exports.update = (req, res) => {
   // console.log("UPDATE Data- req.body",req.body )
 
   console.log(req.user._id);
-  const { name } = req.body;
+  const { name, homeAddress, workAddress } = req.body;
+
   User.findById(req.user._id)
     .exec()
     .then((user) => {
@@ -112,13 +113,17 @@ exports.update = (req, res) => {
           success: false,
         });
       }
-      if (!name) {
-        return res.status(400).json({
-          error: "Name is Required",
-          success: false,
-        });
-      } else {
+
+      if (name) {
         user.name = name;
+      }
+
+      if (homeAddress) {
+        user.homeAddress = homeAddress;
+      }
+
+      if (workAddress) {
+        user.workAddress = workAddress;
       }
 
       user

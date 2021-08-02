@@ -98,21 +98,23 @@ exports.getProduct = async (req, res) => {
     isNewArrival = null,
     isNewLaunch = null,
     search = "",
-    sortByPrice = "asc",
+    sortByPrice,
+    minPrice = 0,
+    maxPrice = 1000000000000000000,
   } = req.query;
   try {
-    let myQuery = {};
+    let myQuery = { productPrice: { $lte: maxPrice, $gte: minPrice } };
     if (!!showFirstPage) {
-      myQuery = { showFirstPage };
+      myQuery = { ...myQuery, showFirstPage };
     }
     if (!!isBestSeller) {
-      myQuery = { isBestSeller };
+      myQuery = { ...myQuery, isBestSeller };
     }
     if (!!isNewArrival) {
-      myQuery = { isNewArrival };
+      myQuery = { ...myQuery, isNewArrival };
     }
     if (!!isNewLaunch) {
-      myQuery = { isNewLaunch };
+      myQuery = { ...myQuery, isNewLaunch };
     }
     if (/\S/.test(productBrand)) {
       myQuery = { ...myQuery, productBrand: productBrand.toUpperCase() };
@@ -125,7 +127,7 @@ exports.getProduct = async (req, res) => {
       myQuery = { ...myQuery, productName: regex };
     }
 
-    if (sortByPrice !== "asc" && sortByPrice !== "desc") {
+    if (sortByPrice && sortByPrice !== "asc" && sortByPrice !== "desc") {
       return res.status(400).json({
         error:
           "please send the correct sortByPrice. It can be either asc or desc.",
@@ -133,12 +135,23 @@ exports.getProduct = async (req, res) => {
       });
     }
 
-    const product = await Product.find(myQuery)
-      .sort({ productPrice: sortByPrice })
-      .select("-__v -createdBy")
-      .limit(limit * 1)
-      .skip((page - 1) * limit)
-      .exec();
+    let product;
+
+    if (sortByPrice) {
+      product = await Product.find(myQuery)
+        .sort({ productPrice: sortByPrice })
+        .select("-__v -createdBy")
+        .limit(limit * 1)
+        .skip((page - 1) * limit)
+        .exec();
+    } else {
+      product = await Product.find(myQuery)
+        .select("-__v -createdBy")
+        .limit(limit * 1)
+        .skip((page - 1) * limit)
+        .exec();
+    }
+
     const productsTotal = await Product.countDocuments(myQuery).exec();
     res.status(200).json({
       totalDocs: productsTotal,
