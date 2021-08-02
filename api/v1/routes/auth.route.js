@@ -10,6 +10,7 @@ const {
   success,
   failure,
   googleLogin,
+  facebookLogin,
 } = require("../controllers/auth.controller");
 const {
   userSignupValidator,
@@ -25,7 +26,8 @@ router.post("/signup", userSignupValidator, runValidation, signup);
 // router.post("/account-activation", accountActivation);
 router.get("/account-activation/:token", accountActivation);
 router.post("/signin", userSigninValidator, runValidation, signin);
-router.post("/google-login",googleLogin)
+router.post("/google-login", googleLogin);
+router.post("/facebook-login", facebookLogin);
 
 router.post(
   "/changePassword",
@@ -49,7 +51,7 @@ router.put(
   resetPassword
 );
 
-router.get("/success",success)
-router.get("/failure",failure)
+router.get("/success", success);
+router.get("/failure", failure);
 
 module.exports = router;

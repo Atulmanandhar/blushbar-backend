@@ -4,8 +4,10 @@ const expressJwt = require("express-jwt");
 const sgMail = require("@sendgrid/mail");
 const _ = require("lodash");
 const { OAuth2Client } = require("google-auth-library");
+const fetch = require("node-fetch");
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 exports.signup = (req, res) => {
   const { name, email, password, phoneNumber } = req.body;
@@ -290,8 +292,6 @@ exports.failure = (req, res) => {
 };
 
 exports.googleLogin = async (req, res) => {
-  const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-
   const { idToken } = req.body;
   try {
     const response = await googleClient.verifyIdToken({
@@ -350,6 +350,79 @@ exports.googleLogin = async (req, res) => {
           });
         });
       }
+    }
+  } catch (err) {
+    return res.status(500).json({
+      error: err,
+      success: false,
+    });
+  }
+};
+
+exports.facebookLogin = async (req, res) => {
+  const { userId, accessToken } = req.body;
+
+  const apiUrl = `https://graph.facebook.com/${userId}?fields=email,name,picture&access_token=${accessToken}`;
+
+  try {
+    const response = await fetch(apiUrl, { method: "GET" });
+    const responseJson = await response.json();
+    const {
+      email,
+      name,
+      picture: {
+        data: { url },
+      },
+    } = responseJson;
+    const user = await User.findOne({ email }).exec();
+
+    if (user) {
+      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+        expiresIn: "7d",
+      });
+      user.hashed_password = undefined;
+      user.resetCode = undefined;
+      user.__v = undefined;
+      user.salt = undefined;
+      user.createdAt = undefined;
+      user.updatedAt = undefined;
+      return res.status(200).json({
+        token,
+        user: user,
+        success: true,
+      });
+    } else {
+      //generate a random password (userModel requires a password )
+      let password = email + process.env.JWT_SECRET;
+      const newUser = new User({
+        name,
+        email,
+        password,
+        profilePicture: url,
+      });
+      const token = jwt.sign({ _id: newUser._id }, process.env.JWT_SECRET, {
+        expiresIn: "7d",
+      });
+
+      newUser.save((err, data) => {
+        if (err) {
+          return res.status(500).json({
+            error: err,
+            success: false,
+          });
+        }
+        data.hashed_password = undefined;
+        data.resetCode = undefined;
+        data.__v = undefined;
+        data.salt = undefined;
+        data.createdAt = undefined;
+        data.updatedAt = undefined;
+        return res.json({
+          token,
+          user: data,
+          success: true,
+        });
+      });
     }
   } catch (err) {
     return res.status(500).json({
