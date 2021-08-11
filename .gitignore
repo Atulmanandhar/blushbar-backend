@@ -3,9 +3,11 @@
 /uploads/profile/*
 /uploads/product/*
 /uploads/category/*
+/uploads/banner/*
 .package-lock.json
 
 !uploads/profile/.gitkeep 
 !uploads/product/.gitkeep 
 !uploads/category/.gitkeep 
+!uploads/banner/.gitkeep 
 

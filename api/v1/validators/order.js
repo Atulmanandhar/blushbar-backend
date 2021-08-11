@@ -2,6 +2,7 @@ const { check } = require("express-validator");
 
 exports.createOrderValidator = [
   check("orderDate").notEmpty().withMessage("Order Date is required"),
+  check("orderId").notEmpty().withMessage("Order Id is required"),
   check("orderDate").isDate().withMessage("Order Date is wrong format"),
   check("paymentOption").notEmpty().withMessage("Order Date is required"),
   check("paymentOption")
@@ -25,14 +26,17 @@ exports.createOrderValidator = [
   check("deliveryCharge")
     .isNumeric()
     .withMessage("deliveryCharge must be a number"),
+  check("deliveryAddress")
+    .notEmpty()
+    .withMessage("Delivery Address is required"),
 ];
 
 exports.updateOrderStatusValidator = [
   check("orderStatus").notEmpty().withMessage("OrderStatus is required"),
   check("orderStatus")
-    .isIn(["pending", "accepted", "canceled", "completed"])
+    .isIn(["pending", "confirmed", "dispatched", "canceled", "completed"])
     .withMessage(
-      "orderStatus can only be of pending, accepted, canceled or completed."
+      "orderStatus can only be of pending, confirmed,dispatched, canceled or completed."
     ),
   check("paymentStatus")
     .optional()

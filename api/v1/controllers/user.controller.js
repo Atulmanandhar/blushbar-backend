@@ -77,18 +77,28 @@ exports.verifySms = async (req, res) => {
       sessionInfo: sessionInfo,
     });
 
-    const updateUser = await User.findByIdAndUpdate(_id, {
-      $set: { isPhoneVerified: true, phoneNumber: result.data.phoneNumber },
-    }).exec();
+    const updateUser = await User.findByIdAndUpdate(
+      _id,
+      {
+        $set: { isPhoneVerified: true, phoneNumber: result.data.phoneNumber },
+      },
+      { new: true }
+    ).exec();
     if (!updateUser) {
       return res.status(500).json({
         error: "Something went wrong. Error updating user in the database",
         success: false,
       });
     }
+    updateUser.hashed_password = undefined;
+    updateUser.salt = undefined;
+    updateUser.__v = undefined;
+    updateUser.createdAt = undefined;
+    updateUser.updatedAt = undefined;
     res.status(201).json({
       message: "The phone Number has succcessfully been verified",
       success: true,
+      data: updateUser,
     });
   } catch (err) {
     res.status(500).json({

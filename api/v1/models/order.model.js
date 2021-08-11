@@ -13,6 +13,11 @@ const productsSchema = mongoose.Schema({
   },
 });
 
+const locationSchema = new mongoose.Schema({
+  city: { type: String, trim: true },
+  address: { type: String, trim: true },
+});
+
 const orderSchema = mongoose.Schema(
   {
     _id: mongoose.Schema.Types.ObjectId,
@@ -21,7 +26,7 @@ const orderSchema = mongoose.Schema(
       ref: "User",
       required: true,
     },
-
+    orderId: { type: String, required: true },
     products: {
       type: [productsSchema],
     },
@@ -67,9 +72,10 @@ const orderSchema = mongoose.Schema(
     orderDescription: { type: String },
     orderStatus: {
       type: String,
-      enum: ["pending", "accepted", "canceled", "completed"],
+      enum: ["pending", "confirmed", "dispatched", "canceled", "completed"],
       default: "pending",
     },
+    deliveryAddress: { type: locationSchema, required: true },
   },
   {
     timestamps: true,

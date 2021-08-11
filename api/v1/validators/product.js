@@ -38,6 +38,18 @@ exports.createProductValidator = [
     .withMessage("Best Seller must be a boolean"),
   check("isNewLaunch").notEmpty().withMessage("isNewArrival is required"),
   check("isNewLaunch").isBoolean().withMessage("isNewLaunch must be a boolean"),
+  check("offerDiscount")
+    .optional()
+    .isBoolean()
+    .withMessage("offerDiscount must be a boolean"),
+  check("discountAmount")
+    .optional()
+    .isNumeric()
+    .withMessage("discountAmount must be a number"),
+  check("discountType")
+    .optional()
+    .isIn(["percent", "amount"])
+    .withMessage("discountType can only be percent or amount "),
 ];
 
 exports.updateProductValidator = [
@@ -90,4 +102,16 @@ exports.updateProductValidator = [
     .optional()
     .isBoolean()
     .withMessage("isNewLaunch must be a boolean"),
+  check("offerDiscount")
+    .optional()
+    .isBoolean()
+    .withMessage("offerDiscount must be a boolean"),
+  check("discountAmount")
+    .optional()
+    .isNumeric()
+    .withMessage("discountAmount must be a number"),
+  check("discountType")
+    .optional()
+    .isIn(["percent", "amount"])
+    .withMessage("discountType can only be percent or amount "),
 ];

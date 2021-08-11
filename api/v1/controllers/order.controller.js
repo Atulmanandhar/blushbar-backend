@@ -24,6 +24,8 @@ exports.createOrder = async (req, res) => {
     subTotal,
     vatTotal,
     deliveryCharge,
+    orderId,
+    deliveryAddress,
   } = req.body;
 
   //validation for existing products
@@ -39,7 +41,7 @@ exports.createOrder = async (req, res) => {
       if (!findProduct) {
         errCheck = "error";
         return res.status(404).json({
-          error: `The Package with id ${findProduct} doesn't exist`,
+          error: `The Product with id ${products[i].product} doesn't exist`,
           success: false,
         });
       }
@@ -67,6 +69,8 @@ exports.createOrder = async (req, res) => {
       subTotal,
       vatTotal,
       deliveryCharge,
+      orderId,
+      deliveryAddress,
     });
 
     const saveOrder = await order.save();
@@ -103,8 +107,20 @@ exports.createOrder = async (req, res) => {
 //susbsciber get all your own orders
 exports.getOrders = async (req, res) => {
   const { _id } = req.user;
-  const { page = 1, limit = 10 } = req.query;
+  const { page = 1, limit = 10, status } = req.query;
   let myQuery = { createdBy: _id };
+
+  if (status) {
+    if (status.toLowerCase() === "active") {
+      myQuery = {
+        ...myQuery,
+        orderStatus: { $in: ["pending", "confirmed", "dispatched"] },
+      };
+    }
+    if (status.toLowerCase() === "completed") {
+      myQuery = { ...myQuery, orderStatus: "completed" };
+    }
+  }
 
   try {
     const orderResult = await Order.find(myQuery)
@@ -142,7 +158,13 @@ exports.getOrdersByAdmin = async (req, res) => {
   const { page = 1, limit = 10, orderStatus } = req.query;
   let myQuery = {};
   if (!!orderStatus) {
-    const checkingArray = ["pending", "accepted", "canceled", "completed"];
+    const checkingArray = [
+      "pending",
+      "confirmed",
+      "dispatched",
+      "canceled",
+      "completed",
+    ];
     const checkValueExists = checkingArray.some(
       (item) => item === orderStatus.toLowerCase()
     ); // Returns true or false

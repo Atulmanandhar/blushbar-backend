@@ -2,25 +2,25 @@ const router = require("express").Router();
 
 const mongoose = require("mongoose");
 const {
-  createProduct,
-  updateProduct,
-  getProduct,
-  getProductById,
-  deleteProductById,
-  validateCart
-} = require("../controllers/product.controller");
+  getBanner,
+  createBanner,
+  deleteBanner,
+  editBanner,
+} = require("../controllers/banner.controller");
 const {
   requireSignin,
   adminMiddleWare,
 } = require("../middleware/auth.middleware");
-const { createProductValidator,updateProductValidator } = require("../validators/product");
+
 const { runValidationwithImages } = require("../validators/");
+const { createBannerValidator, updateBannerValidator } = require("../validators/banner");
+
 const multer = require("multer");
 const path = require("path");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./uploads/product/");
+    cb(null, "./uploads/banner/");
   },
   filename: function (req, file, cb) {
     cb(
@@ -54,83 +54,70 @@ const upload = multer({
   fileFilter: fileFilter,
 });
 
-const uploadMiddleWare = upload.array("productImages", 4);
+const uploadMiddleWare = upload.single("bannerImage");
 
+router.get("/banner", getBanner);
+router.post(
+  "/banner",
+  requireSignin,
+  adminMiddleWare,
+  function (req, res, next) {
+    uploadMiddleWare(req, res, function (err) {
+      if (err instanceof multer.MulterError) {
+        // A Multer error occurred when uploading.
+        return res.status(500).json({
+          error:
+            "You can only upload a maximum of 1 file. File can be of jpeg and pngs only",
+          err,
+        });
+      } else if (err) {
+        return res.status(500).json({
+          error: "Error uploading files. Please try again",
+          err,
+        });
+      }
+      next();
+    });
+  },
+  createBannerValidator,
+  runValidationwithImages,
+  createBanner
+);
 
+router.patch(
+  "/banner/:bannerId",
+  requireSignin,
+  adminMiddleWare,
 
-router.get("/product", getProduct);
+  function (req, res, next) {
+    uploadMiddleWare(req, res, function (err) {
+      if (err instanceof multer.MulterError) {
+        // A Multer error occurred when uploading.
+        return res.status(500).json({
+          error:
+            "You can only upload a maximum of 1 files. File can be of jpeg and pngs only",
+          err,
+        });
+      } else if (err) {
+        return res.status(500).json({
+          error: "Error uploading files. Please try again",
+          err,
+        });
+      }
 
-router.get("/product/:productId", getProductById);
+      next();
+    });
+  },
+  updateBannerValidator,
+  runValidationwithImages,
+  editBanner
+);
 
 router.delete(
-  "/product/:productId",
+  "/banner/:bannerId",
   requireSignin,
   adminMiddleWare,
-  deleteProductById
+  deleteBanner
 );
-
-//only admin can create products
-router.post(
-  "/product",
-  requireSignin,
-  adminMiddleWare,
-  function (req, res, next) {
-    uploadMiddleWare(req, res, function (err) {
-      if (err instanceof multer.MulterError) {
-        // A Multer error occurred when uploading.
-        return res.status(500).json({
-          error:
-            "You can only upload a maximum of 6 files. File can be of jpeg and pngs only",
-          err,
-        });
-      } else if (err) {
-        return res.status(500).json({
-          error: "Error uploading files. Please try again",
-          err,
-        });
-      }
-      next();
-    });
-  },
-  createProductValidator,
-  runValidationwithImages,
-  createProduct
-);
-
-
-//only admin can patch products
-router.patch(
-  "/product/:productId",
-  requireSignin,
-  adminMiddleWare,
-  function (req, res, next) {
-    uploadMiddleWare(req, res, function (err) {
-      if (err instanceof multer.MulterError) {
-        // A Multer error occurred when uploading.
-        return res.status(500).json({
-          error:
-            "You can only upload a maximum of 6 files. File can be of jpeg,png or pdf files only",
-          err,
-        });
-      } else if (err) {
-        return res.status(500).json({
-          error: "Error uploading files. Please try again",
-          err,
-        });
-      }
-
-      next();
-    });
-  },
-  updateProductValidator,
-  runValidationwithImages,
-  updateProduct
-);
-
-router.post("/validateCart",validateCart)
-
-
-
-
 
 module.exports = router;

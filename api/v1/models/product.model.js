@@ -20,6 +20,13 @@ const productSchema = mongoose.Schema(
       default: 0,
       min: 0,
     },
+    offerDiscount:{type:Boolean,default:false},
+    discountAmount:{type:Number,default:0},
+    discountType: {
+      type: String,
+      enum: ["percent", "amount"],
+      default: "percent",
+    },
   },
   {
     timestamps: true,

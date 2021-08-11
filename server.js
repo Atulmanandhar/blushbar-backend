@@ -5,8 +5,9 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const compression = require("compression");
 const helmet = require("helmet");
-
 require("dotenv").config();
+
+const path = require("path");
 const port = process.env.PORT || 8000;
 let DEBUG;
 mongoose
@@ -28,9 +29,11 @@ const categoryRoutes = require("./api/v1/routes/category.route");
 const brandRoutes = require("./api/v1/routes/brand.route");
 const promoCodeRoutes = require("./api/v1/routes/promocode.route");
 const searchRoutes = require("./api/v1/routes/search.route");
+const bannerRoutes = require("./api/v1/routes/banner.route")
 
 //middlewares
 app.use("/uploads", express.static("uploads"));
+app.use(express.static("staticHtml"));
 //middlewares
 app.use(express.json());
 app.use(cors());
@@ -59,6 +62,7 @@ app.use("/api/v1", categoryRoutes);
 app.use("/api/v1", brandRoutes);
 app.use("/api/v1", promoCodeRoutes);
 app.use("/api/v1", searchRoutes);
+app.use("/api/v1", bannerRoutes);
 
 app.use(function (err, req, res, next) {
   if (err.name === "UnauthorizedError") {

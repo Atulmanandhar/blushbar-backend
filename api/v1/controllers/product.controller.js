@@ -31,6 +31,9 @@ exports.createProduct = async (req, res) => {
     isNewArrival,
     isNewLaunch,
     itemCode,
+    offerDiscount,
+    discountAmount,
+    discountType,
   } = req.body;
 
   const capsCategory = category.toUpperCase();
@@ -57,6 +60,9 @@ exports.createProduct = async (req, res) => {
     isNewArrival,
     isNewLaunch,
     itemCode,
+    offerDiscount,
+    discountAmount,
+    discountType,
   });
 
   try {
@@ -237,6 +243,9 @@ exports.updateProduct = async (req, res) => {
       isNewArrival,
       isNewLaunch,
       itemCode,
+      offerDiscount,
+      discountAmount,
+      discountType,
     } = req.body;
 
     const urlScheme = DEBUG ? req.protocol + "://" : "https://";
@@ -323,6 +332,15 @@ exports.updateProduct = async (req, res) => {
     if (itemCode) {
       myQuery = { ...myQuery, itemCode };
     }
+    if (offerDiscount) {
+      myQuery = { ...myQuery, offerDiscount };
+    }
+    if (discountAmount) {
+      myQuery = { ...myQuery, discountAmount };
+    }
+    if (discountType) {
+      myQuery = { ...myQuery, discountType };
+    }
 
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,
@@ -336,6 +354,48 @@ exports.updateProduct = async (req, res) => {
     res.status(201).json({
       message: "Successfully updated Product.",
       data: updatedProduct,
+      success: true,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err, success: false });
+  }
+};
+
+exports.validateCart = async (req, res) => {
+  const { products = [] } = req.body;
+  const returnData = [];
+  if (products.length === 0)
+    return res
+      .status(404)
+      .json({ error: "At least one product must be added", success: false });
+
+  try {
+    for (let i = 0; i < products.length; i++) {
+      const findProduct = await Product.findById(products[i].product).exec();
+      if (!findProduct) {
+        returnData.push({
+          product: products[i].product,
+          inStock: false,
+          exists: false,
+        });
+      } else {
+        if (findProduct.totalStock < products[i].quantity) {
+          returnData.push({
+            product: products[i].product,
+            inStock: false,
+            exists: true,
+          });
+        } else {
+          returnData.push({
+            product: products[i].product,
+            inStock: true,
+            exists: true,
+          });
+        }
+      }
+    }
+    return res.status(200).json({
+      data: returnData,
       success: true,
     });
   } catch (err) {
